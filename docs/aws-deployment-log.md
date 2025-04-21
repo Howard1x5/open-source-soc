@@ -67,7 +67,7 @@ Given that this deployment is intended for testing and light use, the selected *
    - **Use a password manager (Bitwarden, 1Password, LastPass)**
    - **Store it on an encrypted USB drive or a secure vault (e.g., VeraCrypt, BitLocker)**
 
-✅ **Key pair security is set up correctly!**
+ **Key pair security is set up correctly!**
 
 ---
 
@@ -79,7 +79,7 @@ Given that this deployment is intended for testing and light use, the selected *
   2. Changed the **EC2 instance configuration to use the new subnet.**
   3. Ensured **auto-assign public IP was enabled**.
 
-✅ **Issue resolved!**
+ **Issue resolved!**
 
 #### **Issue: Security Group Conflict**
 - **Error:** "The security group `security-onion-sg` already exists for VPC `security-onion-vpc`."
@@ -89,18 +89,66 @@ Given that this deployment is intended for testing and light use, the selected *
   2. **Re-selected the correct security group (`security-onion-sg`)** in EC2 instance configuration.
   3. **Ensured subnet and VPC settings matched correctly.**
 
-✅ **Issue resolved!**
+ **Issue resolved!**
 
 ---
 
 ### **Final EC2 Instance Configuration & Launch**
-✅ **Instance Name:** `security-onion-instance`
-✅ **Subnet:** `security-onion-public-subnet-2` (`us-east-1a`)
-✅ **Security Group:** `security-onion-sg`
-✅ **Storage:**
-  - **Root Volume:** 8GB, gp3, `/dev/sda1`, Delete on Termination ✅
-  - **Log Storage Volume:** 50GB, gp3, `/dev/sdb`, Delete on Termination ❌
-✅ **Advanced Settings:** Left mostly default, no snapshot used.
+- **Instance Name:** `security-onion-instance`
+- **Subnet:** `security-onion-public-subnet-2` (`us-east-1a`)
+- **Security Group:** `security-onion-sg`
+- **Storage:**
+  - **Root Volume:** 8GB, gp3, `/dev/sda1`, Delete on Termination -
+  - **Log Storage Volume:** 50GB, gp3, `/dev/sdb`, Delete on Termination 
+- **Advanced Settings:** Left mostly default, no snapshot used.
 
 🚀 **Instance successfully launched! Next step: SSH access and Security Onion installation.**
 
+### **Syslog Port 514 Opened for Ingestion**
+
+#### **Summary of Decision-Making Process**
+- **Objective:** Enable Security Onion to receive syslog data from internal VMs.
+- **CIDR Range Used:** `10.0.0.0/16` — aligned with the active VPC route table.
+- **Port/Protocol:** UDP 514
+- **Rationale:**
+  - Restrict access to internal sources only.
+  - Avoid global exposure (`0.0.0.0/0`).
+  - Allow future VM log forwarding within VPC.
+
+#### **Step-by-Step Process & Observations**
+1. **Opened EC2 instance’s Security Group.**
+2. **Edited Inbound Rules:**
+   - Type: Custom UDP
+   - Protocol: UDP
+   - Port Range: 514
+   - Source: `10.0.0.0/16`
+   - Description: Syslog ingestion from internal VMs
+3. **Saved rule changes** without needing to start the EC2 instance.
+
+#### **Result**
+- **Port 514 (UDP)** is now open for internal log forwarding.
+- EC2 instance is ready to receive syslog from internal VM sources.
+
+### **IAM Role Creation and Attachment**
+
+#### **Summary of Decision-Making Process**
+- **Objective:** Provide Security Onion EC2 instance with permission to interact with AWS services.
+- **Use Case:** Pull logs from AWS services like CloudTrail and S3 during testing.
+
+#### **Step-by-Step Process & Observations**
+1. **Opened IAM Console.**
+2. **Created new IAM role with the following settings:**
+   - Trusted entity: AWS Service → EC2
+   - Attached policies:
+     - `AmazonS3ReadOnlyAccess`
+     - `AWSCloudTrailReadOnlyAccess`
+     - `AmazonEC2ReadOnlyAccess`
+   - Role name: `SecurityOnion-EC2-Role`
+   - Tags added: `Project=open-source-soc`, `Environment=testing`
+3. **Navigated to EC2 Console → Instances.**
+4. **Selected the Security Onion instance.**
+5. **Attached IAM role via:** Actions → Security → Modify IAM Role.
+
+#### **Result**
+- **IAM role successfully attached** to the Security Onion EC2 instance.
+- Instance now has **read-only access** to AWS services required for logging and diagnostics.

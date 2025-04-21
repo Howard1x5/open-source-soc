@@ -17,21 +17,21 @@ This document provides a **step-by-step checklist** for deploying Security Onion
 ## [2] Set Up VPC & Networking
 - [X] Create a new VPC or use an existing one
 - [X] Configure subnets (public or private based on need)
-- [ ] Configure Security Groups:
+- [X] Configure Security Groups:
   - [X] Allow SSH (Port 22) from specific IPs
   - [X] Allow Web UI access (Port 443) for Security Onion
-  - [-] Allow Syslog (Port 514) and other required ingestion ports
+  - [X] Allow Syslog (Port 514) and other required ingestion ports
 - [X] Set up appropriate routing and internet gateway if needed
 - [X] Document networking choices and rationale
 
 ---
 
 ## [3] Create IAM Role for EC2 Instance
-- [ ] Create a new IAM role with required permissions:
-  - [ ] Attach `AmazonS3ReadOnlyAccess` (if storing logs in S3)
-  - [ ] Attach `AWSCloudTrailReadOnlyAccess` (for CloudTrail logs)
-  - [ ] Attach `AmazonEC2FullAccess` (for EC2 management, optional)
-- [ ] Document IAM role configuration
+- [X] Create a new IAM role with required permissions:
+  - [X] Attach `AmazonS3ReadOnlyAccess` (if storing logs in S3)
+  - [X] Attach `AWSCloudTrailReadOnlyAccess` (for CloudTrail logs)
+  - [X] Attach `AmazonEC2FullAccess` (for EC2 management, optional)
+- [X] Document IAM role configuration
 
 ---
 
