@@ -18,19 +18,19 @@
 - [x] Allocate and associate Elastic IP for persistent access
 - [x] Configure security group:
   - [x] TCP 22 (SSH) from admin IP
-  - [ ] TCP 443 (SOC web interface)
-  - [ ] UDP 514 (Syslog ingestion)
+  - [X] TCP 443 (SOC web interface)
+  - [X] UDP 514 (Syslog ingestion)
 
 ---
 
 ## Phase 3: Configure Security Onion Instance
-- [ ] Start EC2 instance
-- [ ] SSH into instance using Elastic IP
-- [ ] Run `sudo so-setup`
-- [ ] Select deployment mode: **Standalone**
-- [ ] Assign network interfaces
-- [ ] Enable Elastic Stack
-- [ ] Set SOC credentials
+- [X] Start EC2 instance
+- [X] SSH into instance using Elastic IP
+- [X] Run `sudo so-setup`
+- [X] Select deployment mode: **Standalone**
+- [X] Assign network interfaces
+- [X] Enable Elastic Stack
+- [X] Set SOC credentials
 - [ ] Complete installation process
 
 ---
